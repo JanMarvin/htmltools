@@ -506,12 +506,27 @@ renderDependencies <- function(dependencies,
 
     # add stylesheets
     if (length(dep$stylesheet) > 0) {
-      html <- c(html, paste(
-        "<link href=\"",
-        htmlEscape(hrefFilter(file.path(srcpath, encodeFunc(dep$stylesheet)))),
-        "\" rel=\"stylesheet\" />",
-        sep = ""
-      ))
+      link <- vapply(
+        dep$stylesheet,
+        function(x) {
+          if (length(x) == 1) {
+            sprintf(
+              "<link href=\"%s\" rel=\"stylesheet\" />",
+              htmlEscape(hrefFilter(file.path(srcpath, encodeFunc(x[1]))))
+            )
+          } else if (length(x) == 2) {
+            sprintf(
+              "<link href=\"%s\" rel=\"stylesheet\" media=\"%s\" />",
+              htmlEscape(hrefFilter(file.path(srcpath, encodeFunc(x[1])))),
+              x[2]
+            )
+          }
+        },
+        FUN.VALUE = NA_character_,
+        USE.NAMES = FALSE
+      )
+
+      html <- c(html, link)
     }
 
     # add scripts

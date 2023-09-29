@@ -113,7 +113,18 @@ save_html.default <- function(html, file, background = "white", libdir = "lib", 
             sprintf('<html lang="%s">', lang),
             "<head>",
             "<meta charset=\"utf-8\"/>",
-            sprintf("<style>body{background-color:%s;}</style>", htmlEscape(background)),
+            sprintf("<style>
+/* Default background for light mode */
+body {
+  background-color: %s;
+}
+
+/* Dark mode background */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #0d1117;
+  }
+}</style>", htmlEscape(background)),
             renderDependencies(deps, c("href", "file")),
             rendered$head,
             "</head>",
